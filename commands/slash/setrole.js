@@ -1,18 +1,19 @@
-const { SlashCommandBuilder } = require("discord.js");
-const fs = require("fs");
-const config = require("../../config.json");
+import { SlashCommandBuilder } from "discord.js";
+import { updateAllowedRole } from "../../utils/permissions.js";
+import config from "../../config.json" assert { type: "json" };
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("setrole")
-    .setDescription("Set allowed role")
+    .setDescription("Set the role that can use this bot")
     .addRoleOption(o => o.setName("role").setDescription("Role").setRequired(true)),
 
   async run(client, interaction) {
-    const role = interaction.options.getRole("role");
-    config.allowedRole = role.id;
+    if (interaction.user.id !== config.ownerId)
+      return interaction.reply({ content: "❌ Only owner can use this.", ephemeral: true });
 
-    fs.writeFileSync("./config.json", JSON.stringify(config, null, 2));
-    interaction.reply(`Allowed role set to ${role.name}`);
+    const role = interaction.options.getRole("role");
+    updateAllowedRole(role.id);
+    interaction.reply(`✅ Allowed role updated to: **${role.name}**`);
   }
 };
