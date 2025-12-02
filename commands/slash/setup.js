@@ -3,7 +3,8 @@ import {
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle
+  ButtonStyle,
+  PermissionsBitField
 } from "discord.js";
 import config from "../../config.json" with { type: "json" };
 
@@ -13,9 +14,15 @@ export default {
     .setDescription("Create welcome panel with rules and role buttons"),
 
   run: async (client, interaction) => {
+    // Allow server admins or the bot owner
+    const isOwner = interaction.user.id === config.ownerId;
+    const isAdmin = interaction.member.permissions.has(PermissionsBitField.Flags.Administrator);
+    const hasAllowedRole = config.allowedRoleId && 
+                           config.allowedRoleId !== "ROLE_ALLOWED" && 
+                           interaction.member.roles.cache.has(config.allowedRoleId);
 
-    if (!interaction.member.roles.cache.has(config.allowedRoleId)) {
-      return interaction.reply({ content: "❌ You are not allowed to use this command.", ephemeral: true });
+    if (!isOwner && !isAdmin && !hasAllowedRole) {
+      return interaction.reply({ content: "❌ You need Administrator permissions to use this command.", ephemeral: true });
     }
 
     const welcomeEmbed = new EmbedBuilder()

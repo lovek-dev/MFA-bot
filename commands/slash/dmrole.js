@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder, PermissionsBitField } from "discord.js";
 import { hasBotAccess } from "../../utils/permissions.js";
 
 export default {
@@ -9,11 +9,17 @@ export default {
     .addStringOption(o => o.setName("message").setDescription("Message").setRequired(true)),
 
   async run(client, interaction) {
-    if (!hasBotAccess(interaction.member))
+    // Check permissions
+    const isAdmin = interaction.member.permissions.has(PermissionsBitField.Flags.Administrator);
+    if (!hasBotAccess(interaction.member) && !isAdmin) {
       return interaction.reply({ content: "❌ Not allowed.", ephemeral: true });
+    }
 
     const role = interaction.options.getRole("role");
     const msg = interaction.options.getString("message");
+
+    // Defer reply since this takes time
+    await interaction.deferReply({ ephemeral: true });
 
     let sent = 0;
     for (const member of role.members.values()) {
@@ -24,6 +30,6 @@ export default {
       } catch {}
     }
 
-    interaction.reply(`✅ DMed ${sent}/${role.members.size} members.`);
+    await interaction.editReply(`✅ DMed ${sent}/${role.members.size} members.`);
   }
 };
