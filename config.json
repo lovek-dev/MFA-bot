@@ -4,5 +4,65 @@
   "logChannelId": "LOG_CHANNEL_ID",
   "allowedRoleId": "ROLE_ID_THAT_CAN_USE_BOT"
   "ownerId": "1040925985618530376"
+
+  "welcomeMessage": " **Welcome to MFA**
+✦・Welcome!・✦
+
+:compass:
+ Make Sure to Read the Rules! ‹3
+
+
+₊˚:globe_with_meridians:
+ Get verfied at ⁠🧳᲼•᲼verify
+
+
+— ୨🎀
+୧ Be very welcome! ✦
+
+₊˚ʚ :partying_face:
+ ɞ *Hope you like our server!
+
+Read the rules to avoid punishment
+
+︶꒷꒥꒷ ‧₊˚ Thanks for joining! :)",
+  "rulesText": "Clan Rules
+**Rule 1** -  Teleporting any random player or enemy player (even friends) to a gang/main clan base or a team member is strictly prohibited and will be punished.
+
+**Rule 2**-  New recruits will not have access to the community base until they earn the Member role.
+
+**Rule 3**-  Self-Griefing or by teleporting  an enemy is considered betrayal and will most likely result in a ban.
+
+**Rule 4**- Gang leaders cannot make alliance decisions without permission.
+
+**Rule 5**-  Betrayal will lead to blacklisting, a permanent ban (unless a sincere apology is made), and bounty hunting.
+
+**Rule 6**- Sub Gang leaders cannot kick or ban members without a valid reason and must inform TysonBlade or Hep1s and awa_nb
+
+**Rule 7**- Infighting: the one who initiates an attack will face severe consequences (up to expulsion). Misunderstandings can be resolved, but even accidental attacks earn a warning. 
+
+**Rule 8** - Everyone must be treated equally, whether combatant, grinder, recruiter, or leader.
+
+**Rule 9** - No trash talking or provoking teammates.
+
+**Rule 10**- No team killing; doing so will result in penalties.
+
+**Rule 11**- No yoinking shulker boxes, even as a joke.
+
+**Rule 12** - No begging clan members for tp to their PRIVATE
+bases.       If anyone leaks coords of a private base to another clan members without permission of the base owner, there will be a penalty or possible demotion.
+
+**Rule 13** - Threats like leaking base coordinates will not be tolerated.
+
+**Rule 14** - Dropping in ENVOYS without leader command will result in penalties and possible demotion.
+
+**Rule 15** - Disrespecting leaders or members (through killing, abuse, or insults) will result in a 1-week suspension from the clan",
+  "acceptRulesRoleId": "ROLE_ID_GIVEN_AFTER_ACCEPTING_RULES",
+
+  "claimRoles": [
+        { "id": "ROLE_ID_1", "label": "🔴 Grinder" },
+        { "id": "ROLE_ID_2", "label": "🔵 Fighter" },
+        { "id": "ROLE_ID_3", "label": "🟢 Green Role" }
+    ]
 }
+
 
