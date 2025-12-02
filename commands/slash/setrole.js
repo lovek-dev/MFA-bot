@@ -1,26 +1,18 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
-import { updateAllowedRole } from "../../utils/permissions.js";
-import config from "../../config.json" assert { type: "json" };
+const { SlashCommandBuilder } = require("discord.js");
+const fs = require("fs");
+const config = require("../../config.json");
 
-export default {
-    data: new SlashCommandBuilder()
-        .setName("setrole")
-        .setDescription("Set which role can use the bot")
-        .addRoleOption(o =>
-            o.setName("role")
-            .setDescription("Role that will be allowed")
-            .setRequired(true)
-        ),
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName("setrole")
+    .setDescription("Set allowed role")
+    .addRoleOption(o => o.setName("role").setDescription("Role").setRequired(true)),
 
-    run: async (client, interaction) => {
+  async run(client, interaction) {
+    const role = interaction.options.getRole("role");
+    config.allowedRole = role.id;
 
-        if (interaction.user.id !== config.ownerId)
-            return interaction.reply({ content: "❌ Only the bot owner can use this.", ephemeral: true });
-
-        const role = interaction.options.getRole("role");
-
-        updateAllowedRole(role.id);
-
-        interaction.reply(`✅ Bot access role updated to: **${role.name}**`);
-    }
+    fs.writeFileSync("./config.json", JSON.stringify(config, null, 2));
+    interaction.reply(`Allowed role set to ${role.name}`);
+  }
 };
