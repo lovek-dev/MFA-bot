@@ -14,7 +14,6 @@ export default {
     .setDescription("Create welcome panel with rules and role buttons"),
 
   run: async (client, interaction) => {
-    // Allow server admins or the bot owner
     const isOwner = interaction.user.id === config.ownerId;
     const isAdmin = interaction.member.permissions.has(PermissionsBitField.Flags.Administrator);
     const hasAllowedRole = config.allowedRoleId && 
@@ -36,11 +35,6 @@ export default {
       .setLabel("📘 View Rules")
       .setStyle(ButtonStyle.Primary);
 
-    const acceptButton = new ButtonBuilder()
-      .setCustomId("accept_rules")
-      .setLabel("✅ Accept Rules")
-      .setStyle(ButtonStyle.Success);
-
     const claimRolesButton = new ButtonBuilder()
       .setCustomId("claim_roles")
       .setLabel("🧩 Claim Roles")
@@ -48,7 +42,6 @@ export default {
 
     const row = new ActionRowBuilder().addComponents(
       rulesButton,
-      acceptButton,
       claimRolesButton
     );
 
