@@ -43,23 +43,4 @@ client.on("messageCreate", async message => {
   if (!cmd) return;
 
   try { await cmd.run(client, message, args); }
-  catch (e) { console.error(e); message.reply("❌ Error executing command."); }
-});
-
-// Slash & Button handler
-client.on("interactionCreate", async i => {
-  try {
-    if (i.isChatInputCommand()) {
-      const cmd = client.commands.get(i.commandName);
-      if (cmd) await cmd.run(client, i);
-    }
-    if (i.isButton()) await handleButton(i);
-  } catch (e) {
-    console.error(e);
-    if (i.isRepliable()) i.reply({ content: "❌ Command error.", ephemeral: true });
-  }
-});
-
-client.login(config.token);
-
-
+  catch (e) { console.error(e); message.reply("❌ Error e
