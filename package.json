@@ -1,14 +1,12 @@
 {
-  "name": "discord-multi-bot",
+  "name": "MFA-BOT",
   "version": "1.0.0",
-  "description": "Discord bot with prefix + slash commands, setup system, and moderation",
-  "main": "index.js",
   "type": "module",
+  "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "deploy": "node deploy.js"
+    "start": "node index.js"
   },
   "dependencies": {
-    "discord.js": "^14.16.0"
+    "discord.js": "^14.13.0"
   }
 }
