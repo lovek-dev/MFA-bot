@@ -1,32 +1,58 @@
 import {
   SlashCommandBuilder,
   EmbedBuilder,
+  ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle,
-  ActionRowBuilder
+  ButtonStyle
 } from "discord.js";
-import { hasBotAccess } from "../../utils/permissions.js";
 import config from "../../config.json" assert { type: "json" };
 
 export default {
-  data: new SlashCommandBuilder().setName("setup").setDescription("Setup welcome & rules panel"),
+  data: new SlashCommandBuilder()
+    .setName("setup")
+    .setDescription("Create welcome panel with rules and role buttons"),
 
-  async run(client, interaction) {
-    if (!hasBotAccess(interaction.member))
-      return interaction.reply({ content: "❌ Not allowed.", ephemeral: true });
+  run: async (client, interaction) => {
 
-    const embed = new EmbedBuilder()
-      .setTitle("👋 Welcome!")
+    if (!interaction.member.roles.cache.has(config.allowedRoleId)) {
+      return interaction.reply({ content: "❌ You are not allowed to use this command.", ephemeral: true });
+    }
+
+    const welcomeEmbed = new EmbedBuilder()
+      .setTitle("🎉 Welcome to THE BOYS 🎉")
       .setDescription(config.welcomeMessage)
-      .setColor("Blue");
+      .setImage(config.welcomeImage)
+      .setColor("#ff0000");
+
+    const rulesButton = new ButtonBuilder()
+      .setCustomId("show_rules")
+      .setLabel("📘 View Rules")
+      .setStyle(ButtonStyle.Primary);
+
+    const acceptButton = new ButtonBuilder()
+      .setCustomId("accept_rules")
+      .setLabel("✅ Accept Rules")
+      .setStyle(ButtonStyle.Success);
+
+    const claimRolesButton = new ButtonBuilder()
+      .setCustomId("claim_roles")
+      .setLabel("🧩 Claim Roles")
+      .setStyle(ButtonStyle.Secondary);
 
     const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId("show_rules").setLabel("📜 Rules").setStyle(ButtonStyle.Primary),
-      new ButtonBuilder().setCustomId("accept_rules").setLabel("✅ Accept Rules").setStyle(ButtonStyle.Success),
-      new ButtonBuilder().setCustomId("claim_roles").setLabel("🎁 Claim Roles").setStyle(ButtonStyle.Secondary)
+      rulesButton,
+      acceptButton,
+      claimRolesButton
     );
 
-    await interaction.reply({ content: "✅ Setup complete!", ephemeral: true });
-    await interaction.channel.send({ embeds: [embed], components: [row] });
+    await interaction.reply({
+      content: "Setup complete. Welcome panel created!",
+      ephemeral: true
+    });
+
+    await interaction.channel.send({
+      embeds: [welcomeEmbed],
+      components: [row]
+    });
   }
 };
