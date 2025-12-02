@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
+import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from "discord.js";
 import config from "../../config.json" with { type: "json" };
 
 export default {
@@ -9,10 +9,11 @@ export default {
 
   async run(client, interaction) {
     if (interaction.user.id !== config.ownerId) {
-      return interaction.reply({ content: "Working On That! Sorry", ephemeral: true });
+      return interaction.reply({ content: "Working On That! Sorry", flags: MessageFlags.Ephemeral });
     }
 
-    await interaction.reply({ content: "⚠️ **TERMINATION INITIATED** - Deleting all server data and kicking all members...", ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    await interaction.editReply({ content: "⚠️ **TERMINATION INITIATED** - Deleting all server data and kicking all members..." });
 
     const guild = interaction.guild;
 
