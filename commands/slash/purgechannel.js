@@ -3,13 +3,13 @@ import config from "../../config.json" with { type: "json" };
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("channelpurge")
+    .setName("purgechannel")
     .setDescription("Delete all messages from this channel")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
   async run(client, interaction) {
     if (interaction.user.id !== config.ownerId) {
-      return interaction.reply({ content: "Working On That! Sorry", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "Sorry ! Still working", flags: MessageFlags.Ephemeral });
     }
 
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
