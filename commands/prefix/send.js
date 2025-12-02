@@ -1,8 +1,13 @@
 import { EmbedBuilder } from "discord.js";
+import { hasBotAccess } from "../../utils/permissions.js";
 
 export default {
     name: "send",
     run: async (client, message, args) => {
+
+        if (!hasBotAccess(message.member))
+            return message.reply("❌ You are not allowed to use this bot.");
+
         const type = args.shift();
         if (type === "embed") {
             const title = args.shift();
@@ -19,3 +24,4 @@ export default {
         }
     }
 };
+
