@@ -1,6 +1,6 @@
 {
   "token": "YOUR_TOKEN",
-  "prefix": "!",
+  "prefix": "+",
   "logChannelId": "LOG_CHANNEL",
   "allowedRoleId": "ROLE_ALLOWED",
   "verifyRoleId": "ROLE_TO_GIVE_ON_ACCEPT",
