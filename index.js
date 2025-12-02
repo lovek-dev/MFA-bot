@@ -1,10 +1,15 @@
 import { Client, GatewayIntentBits, Partials, Collection } from "discord.js";
 import fs from "fs";
 import { logAction } from "./utils/logger.js";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const config = require("./config.json");
+import config from "./config.json" with { type: "json" };
 import { handleButton } from "./interactions/buttonHandler.js";
+
+const token = process.env.DISCORD_BOT_TOKEN;
+
+if (!token) {
+  console.error("❌ DISCORD_BOT_TOKEN environment variable is not set!");
+  process.exit(1);
+}
 
 const client = new Client({
   intents: [
@@ -70,4 +75,4 @@ client.on("interactionCreate", async interaction => {
 });
 
 // Login
-client.login(config.token);
+client.login(token);

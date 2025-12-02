@@ -4,8 +4,8 @@ import { logAction } from "../../utils/logger.js";
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("kick")
-    .setDescription("Kick a member")
+    .setName("mod")
+    .setDescription("Moderation kick command")
     .addUserOption(o => o.setName("user").setDescription("User").setRequired(true)),
 
   async run(client, interaction) {

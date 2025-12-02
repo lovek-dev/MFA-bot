@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import { updateAllowedRole } from "../../utils/permissions.js";
-import config from "../../config.json" assert { type: "json" };
+import config from "../../config.json" with { type: "json" };
 
 export default {
   data: new SlashCommandBuilder()

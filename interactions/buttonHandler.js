@@ -4,10 +4,7 @@ import {
   ButtonBuilder,
   ButtonStyle
 } from "discord.js";
-
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const config = require("../config.json");
+import config from "../config.json" with { type: "json" };
 
 export async function handleButton(interaction) {
   const id = interaction.customId;
@@ -15,19 +12,46 @@ export async function handleButton(interaction) {
   if (id === "show_rules") {
     const embed = new EmbedBuilder()
       .setTitle("📜 Rules")
-      .setDescription(config.rulesText)
+      .setDescription(config.rulesMessage || "No rules configured.")
       .setColor("Yellow");
     return interaction.reply({ embeds: [embed], ephemeral: true });
   }
 
   if (id === "accept_rules") {
-    const role = interaction.guild.roles.cache.get(config.acceptRulesRoleId);
-    if (!role) return interaction.reply({ content: "❌ Role missing.", ephemeral: true });
-    await interaction.member.roles.add(role).catch(() => {});
-    return interaction.reply({ content: `✅ You now have **${role.name}**!`, ephemeral: true });
+    if (!config.verifyRoleId || config.verifyRoleId === "ROLE_TO_GIVE_ON_ACCEPT") {
+      return interaction.reply({ 
+        content: "❌ Verification role not configured. An admin needs to set verifyRoleId in config.json.", 
+        ephemeral: true 
+      });
+    }
+
+    const role = interaction.guild.roles.cache.get(config.verifyRoleId);
+    if (!role) {
+      return interaction.reply({ 
+        content: "❌ Could not find the verification role. Please contact an admin.", 
+        ephemeral: true 
+      });
+    }
+
+    try {
+      await interaction.member.roles.add(role);
+      return interaction.reply({ content: `✅ You now have **${role.name}**!`, ephemeral: true });
+    } catch (e) {
+      return interaction.reply({ 
+        content: "❌ Could not assign the role. The bot may lack permissions.", 
+        ephemeral: true 
+      });
+    }
   }
 
   if (id === "claim_roles") {
+    if (!config.claimRoles || config.claimRoles.length === 0) {
+      return interaction.reply({ 
+        content: "🧩 No claimable roles configured yet!", 
+        ephemeral: true 
+      });
+    }
+
     const embed = new EmbedBuilder()
       .setTitle("🎁 Claim Roles")
       .setDescription("Click below to toggle a role.")
@@ -59,12 +83,19 @@ export async function handleButton(interaction) {
     const role = interaction.guild.roles.cache.get(roleId);
     if (!role) return interaction.reply({ content: "❌ Role not found.", ephemeral: true });
 
-    if (interaction.member.roles.cache.has(roleId)) {
-      await interaction.member.roles.remove(roleId).catch(() => {});
-      return interaction.reply({ content: `❌ Removed role **${role.name}**.`, ephemeral: true });
-    } else {
-      await interaction.member.roles.add(roleId).catch(() => {});
-      return interaction.reply({ content: `✅ Added role **${role.name}**.`, ephemeral: true });
+    try {
+      if (interaction.member.roles.cache.has(roleId)) {
+        await interaction.member.roles.remove(roleId);
+        return interaction.reply({ content: `❌ Removed role **${role.name}**.`, ephemeral: true });
+      } else {
+        await interaction.member.roles.add(roleId);
+        return interaction.reply({ content: `✅ Added role **${role.name}**.`, ephemeral: true });
+      }
+    } catch (e) {
+      return interaction.reply({ 
+        content: "❌ Could not modify your roles. The bot may lack permissions.", 
+        ephemeral: true 
+      });
     }
   }
 }

@@ -1,7 +1,9 @@
-module.exports = {
+import { PermissionsBitField } from "discord.js";
+
+export default {
   name: "kick",
   async run(client, message, args) {
-    if (!message.member.permissions.has("KickMembers"))
+    if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers))
       return message.reply("❌ You lack permissions.");
 
     const member = message.mentions.members.first();

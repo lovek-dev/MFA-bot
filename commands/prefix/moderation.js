@@ -3,7 +3,7 @@ import { hasBotAccess } from "../../utils/permissions.js";
 import { logAction } from "../../utils/logger.js";
 
 export default {
-  name: "kick",
+  name: "mod",
   async run(client, message, args) {
     if (!hasBotAccess(message.member))
       return message.reply("❌ You cannot use this bot.");

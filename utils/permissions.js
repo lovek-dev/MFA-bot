@@ -1,4 +1,4 @@
-import config from "../config.json" assert { type: "json" };
+import config from "../config.json" with { type: "json" };
 import fs from "fs";
 
 export function hasBotAccess(member) {
@@ -10,5 +10,3 @@ export function updateAllowedRole(roleId) {
   config.allowedRoleId = roleId;
   fs.writeFileSync("./config.json", JSON.stringify(config, null, 4));
 }
-
-
