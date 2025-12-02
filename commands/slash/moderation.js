@@ -1,15 +1,24 @@
 import { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } from "discord.js";
+import { hasBotAccess } from "../../utils/permissions.js";
 import { logAction } from "../../utils/logger.js";
 
 export default {
     data: new SlashCommandBuilder()
         .setName("kick")
         .setDescription("Kick a member")
-        .addUserOption(o => o.setName("user").setDescription("User to kick").setRequired(true)),
+        .addUserOption(o =>
+            o.setName("user")
+            .setDescription("User to kick")
+            .setRequired(true)
+        ),
 
     run: async (client, interaction) => {
+
+        if (!hasBotAccess(interaction.member))
+            return interaction.reply({ content: "❌ You are not allowed to use this bot.", ephemeral: true });
+
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers))
-            return interaction.reply({ content: "❌ No permission.", ephemeral: true });
+            return interaction.reply({ content: "❌ You do not have permission.", ephemeral: true });
 
         const user = interaction.options.getMember("user");
 
