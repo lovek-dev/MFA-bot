@@ -1,43 +1,32 @@
-const {
+import {
   SlashCommandBuilder,
-  ActionRowBuilder,
+  EmbedBuilder,
   ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder
-} = require("discord.js");
-const config = require("../../config.json");
+  ActionRowBuilder
+} from "discord.js";
+import { hasBotAccess } from "../../utils/permissions.js";
+import config from "../../config.json" assert { type: "json" };
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("setup")
-    .setDescription("Create welcome message with rules & claim roles buttons"),
+export default {
+  data: new SlashCommandBuilder().setName("setup").setDescription("Setup welcome & rules panel"),
 
   async run(client, interaction) {
-    const welcomeEmbed = new EmbedBuilder()
-      .setTitle("Welcome!")
+    if (!hasBotAccess(interaction.member))
+      return interaction.reply({ content: "❌ Not allowed.", ephemeral: true });
+
+    const embed = new EmbedBuilder()
+      .setTitle("👋 Welcome!")
       .setDescription(config.welcomeMessage)
       .setColor("Blue");
 
     const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId("show_rules")
-        .setLabel("📘 View Rules")
-        .setStyle(ButtonStyle.Primary),
-
-      new ButtonBuilder()
-        .setCustomId("accept_rules")
-        .setLabel("✅ Accept Rules")
-        .setStyle(ButtonStyle.Success),
-
-      new ButtonBuilder()
-        .setCustomId("claim_roles")
-        .setLabel("🎉 Claim Roles")
-        .setStyle(ButtonStyle.Secondary)
+      new ButtonBuilder().setCustomId("show_rules").setLabel("📜 Rules").setStyle(ButtonStyle.Primary),
+      new ButtonBuilder().setCustomId("accept_rules").setLabel("✅ Accept Rules").setStyle(ButtonStyle.Success),
+      new ButtonBuilder().setCustomId("claim_roles").setLabel("🎁 Claim Roles").setStyle(ButtonStyle.Secondary)
     );
 
-    await interaction.reply({
-      embeds: [welcomeEmbed],
-      components: [row]
-    });
+    await interaction.reply({ content: "✅ Setup complete!", ephemeral: true });
+    await interaction.channel.send({ embeds: [embed], components: [row] });
   }
 };
