@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: "ban",
   async run(client, message, args) {
     if (!message.member.permissions.has("BanMembers"))
