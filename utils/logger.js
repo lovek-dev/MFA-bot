@@ -1,4 +1,6 @@
-import config from "../config.json" assert { type: "json" };
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const config = require("../config.json");
 
 export async function logAction(guild, embed) {
   const ch = guild.channels.cache.get(config.logChannelId);
