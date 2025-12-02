@@ -1,8 +1,11 @@
 import { Client, GatewayIntentBits, Partials, Collection } from "discord.js";
 import fs from "fs";
 import { logAction } from "./utils/logger.js";
-import config from "./config.json" assert { type: "json" };
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const config = require("./config.json");
 import { handleButton } from "./interactions/buttonHandler.js";
+
 
 const client = new Client({
   intents: [
