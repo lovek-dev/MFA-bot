@@ -1,3 +1,17 @@
 {
-  "scheduledMessages": []
+  "scheduledMessages": [
+    {
+      "id": "1764698172520",
+      "channelId": "1438611778433974313",
+      "guildId": "1438611777482133576",
+      "scheduledTime": "2025-12-02T23:28:00.000Z",
+      "embed": {
+        "title": "die",
+        "description": "kys you dont deserver to live",
+        "color": 5793266
+      },
+      "createdBy": "1040925985618530376",
+      "createdAt": "2025-12-02T17:56:12.520Z"
+    }
+  ]
 }
