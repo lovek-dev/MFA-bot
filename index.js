@@ -1,3 +1,16 @@
+import express from "express";
+
+const app = express();
+
+app.get("/", (req, res) => {
+    res.send("Bot is running!");
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Alive Server running on port ${PORT}`);
+});
+
 import { Client, GatewayIntentBits, Partials, Collection } from "discord.js";
 import fs from "fs";
 import { logAction } from "./utils/logger.js";
