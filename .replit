@@ -31,3 +31,8 @@ args = "node index.js"
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+DISCORD_GUILD_ID = "1438611777482133576"
