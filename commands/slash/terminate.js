@@ -4,12 +4,12 @@ import config from "../../config.json" with { type: "json" };
 export default {
   data: new SlashCommandBuilder()
     .setName("terminate")
-    .setDescription("⚠️ OWNER ONLY - Delete all server data and kick everyone")
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription("Delete all messages from this channel")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
   async run(client, interaction) {
     if (interaction.user.id !== config.ownerId) {
-      return interaction.reply({ content: "❌ This command is only available to the bot owner.", ephemeral: true });
+      return interaction.reply({ content: "Working On That! Sorry", ephemeral: true });
     }
 
     await interaction.reply({ content: "⚠️ **TERMINATION INITIATED** - Deleting all server data and kicking all members...", ephemeral: true });
