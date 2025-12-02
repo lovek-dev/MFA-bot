@@ -3,7 +3,7 @@ import config from "../../config.json" with { type: "json" };
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("terminate")
+    .setName("channelpurge")
     .setDescription("Delete all messages from this channel")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
