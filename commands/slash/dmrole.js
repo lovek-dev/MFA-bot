@@ -1,13 +1,22 @@
 import { SlashCommandBuilder } from "discord.js";
+import { hasBotAccess } from "../../utils/permissions.js";
 
 export default {
     data: new SlashCommandBuilder()
         .setName("dmrole")
-        .setDescription("DM all members in a role")
-        .addRoleOption(o => o.setName("role").setDescription("Role").setRequired(true))
-        .addStringOption(o => o.setName("message").setDescription("Message").setRequired(true)),
+        .setDescription("DM all members of a role")
+        .addRoleOption(o =>
+            o.setName("role").setDescription("Role").setRequired(true)
+        )
+        .addStringOption(o =>
+            o.setName("message").setDescription("Message to send").setRequired(true)
+        ),
 
     run: async (client, interaction) => {
+
+        if (!hasBotAccess(interaction.member))
+            return interaction.reply({ content: "❌ You are not allowed to use this bot.", ephemeral: true });
+
         const role = interaction.options.getRole("role");
         const msg = interaction.options.getString("message");
 
