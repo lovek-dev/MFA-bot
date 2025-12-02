@@ -1,32 +1,64 @@
-const { Client, GatewayIntentBits, Partials, Collection } = require("discord.js");
-const fs = require("fs");
-const path = require("path");
-const config = require("./config.json");
+import { Client, GatewayIntentBits, Partials, Collection } from "discord.js";
+import fs from "fs";
+import { logAction } from "./utils/logger.js";
+import config from "./config.json" assert { type: "json" };
+import { handleButton } from "./interactions/buttonHandler.js";
 
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.DirectMessages
   ],
   partials: [Partials.Channel]
 });
 
 client.commands = new Collection();
-client.slashCommands = new Collection();
-client.buttons = new Collection();
+client.prefixCommands = new Collection();
 
-// Load handlers
-require("./handlers/commandHandler")(client);
-require("./handlers/slashHandler")(client);
-
-// Load events
-const eventFiles = fs.readdirSync("./events");
-for (const file of eventFiles) {
-  const event = require(`./events/${file}`);
-  client.on(event.name, (...args) => event.run(client, ...args));
+// Load prefix commands
+for (const file of fs.readdirSync("./commands/prefix").filter(f => f.endsWith(".js"))) {
+  const cmd = (await import(`./commands/prefix/${file}`)).default;
+  client.prefixCommands.set(cmd.name, cmd);
 }
+
+// Load slash commands
+client.slash = [];
+for (const file of fs.readdirSync("./commands/slash").filter(f => f.endsWith(".js"))) {
+  const cmd = (await import(`./commands/slash/${file}`)).default;
+  client.commands.set(cmd.data.name, cmd);
+  client.slash.push(cmd.data.toJSON());
+}
+
+client.once("ready", () => console.log(`✅ Logged in as ${client.user.tag}`));
+
+// Prefix handler
+client.on("messageCreate", async message => {
+  if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+  const args = message.content.slice(config.prefix.length).trim().split(/ +/);
+  const cmdName = args.shift().toLowerCase();
+  const cmd = client.prefixCommands.get(cmdName);
+  if (!cmd) return;
+
+  try { await cmd.run(client, message, args); }
+  catch (e) { console.error(e); message.reply("❌ Error executing command."); }
+});
+
+// Slash & Button handler
+client.on("interactionCreate", async i => {
+  try {
+    if (i.isChatInputCommand()) {
+      const cmd = client.commands.get(i.commandName);
+      if (cmd) await cmd.run(client, i);
+    }
+    if (i.isButton()) await handleButton(i);
+  } catch (e) {
+    console.error(e);
+    if (i.isRepliable()) i.reply({ content: "❌ Command error.", ephemeral: true });
+  }
+});
 
 client.login(config.token);
 
