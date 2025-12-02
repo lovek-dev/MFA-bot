@@ -6,7 +6,6 @@ const require = createRequire(import.meta.url);
 const config = require("./config.json");
 import { handleButton } from "./interactions/buttonHandler.js";
 
-
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -35,15 +34,40 @@ for (const file of fs.readdirSync("./commands/slash").filter(f => f.endsWith(".j
   client.slash.push(cmd.data.toJSON());
 }
 
+// Ready event
 client.once("ready", () => console.log(`✅ Logged in as ${client.user.tag}`));
 
-// Prefix handler
+// Prefix message handler
 client.on("messageCreate", async message => {
   if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+
   const args = message.content.slice(config.prefix.length).trim().split(/ +/);
   const cmdName = args.shift().toLowerCase();
   const cmd = client.prefixCommands.get(cmdName);
   if (!cmd) return;
 
-  try { await cmd.run(client, message, args); }
-  catch (e) { console.error(e); message.reply("❌ Error e
+  try {
+    await cmd.run(client, message, args);
+  } catch (e) {
+    console.error(e);
+    message.reply("❌ Error executing command.");
+  }
+});
+
+// Slash commands & Button handler
+client.on("interactionCreate", async interaction => {
+  try {
+    if (interaction.isChatInputCommand()) {
+      const cmd = client.commands.get(interaction.commandName);
+      if (cmd) await cmd.run(client, interaction);
+    }
+    if (interaction.isButton()) await handleButton(interaction);
+  } catch (e) {
+    console.error(e);
+    if (interaction.isRepliable())
+      interaction.reply({ content: "❌ Command error.", ephemeral: true });
+  }
+});
+
+// Login
+client.login(config.token);
