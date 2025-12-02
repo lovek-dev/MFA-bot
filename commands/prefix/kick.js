@@ -1,4 +1,5 @@
 import { PermissionsBitField } from "discord.js";
+import config from "../../config.json" with { type: "json" };
 
 export default {
   name: "kick",
@@ -8,6 +9,10 @@ export default {
 
     const member = message.mentions.members.first();
     if (!member) return message.reply("Mention someone to kick!");
+
+    if (member.id === config.ownerId) {
+      return message.reply("❌ You cannot kick the bot owner.");
+    }
 
     await member.kick();
     message.reply(`✅ Kicked ${member.user.tag}`);

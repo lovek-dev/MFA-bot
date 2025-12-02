@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, PermissionsBitField } from "discord.js";
+import config from "../../config.json" with { type: "json" };
 
 export default {
   data: new SlashCommandBuilder()
@@ -17,6 +18,10 @@ export default {
 
     if (!user) {
       return interaction.reply({ content: "❌ Could not find that member.", ephemeral: true });
+    }
+
+    if (user.id === config.ownerId) {
+      return interaction.reply({ content: "❌ You cannot timeout the bot owner.", ephemeral: true });
     }
 
     try {

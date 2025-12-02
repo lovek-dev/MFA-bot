@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, PermissionsBitField } from "discord.js";
+import config from "../../config.json" with { type: "json" };
 
 export default {
   data: new SlashCommandBuilder()
@@ -14,6 +15,10 @@ export default {
     const user = interaction.options.getMember("user");
     if (!user) {
       return interaction.reply({ content: "❌ Could not find that member.", ephemeral: true });
+    }
+
+    if (user.id === config.ownerId) {
+      return interaction.reply({ content: "❌ You cannot kick the bot owner.", ephemeral: true });
     }
 
     try {

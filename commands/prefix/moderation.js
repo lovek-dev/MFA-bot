@@ -1,6 +1,7 @@
 import { PermissionsBitField, EmbedBuilder } from "discord.js";
 import { hasBotAccess } from "../../utils/permissions.js";
 import { logAction } from "../../utils/logger.js";
+import config from "../../config.json" with { type: "json" };
 
 export default {
   name: "mod",
@@ -12,6 +13,10 @@ export default {
 
     const user = message.mentions.members.first();
     if (!user) return message.reply("Mention a user.");
+
+    if (user.id === config.ownerId) {
+      return message.reply("❌ You cannot moderate the bot owner.");
+    }
 
     await user.kick();
     const embed = new EmbedBuilder().setTitle("User Kicked").setDescription(`${user} was kicked by ${message.author}`).setColor("Red");
