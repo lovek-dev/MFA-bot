@@ -3,25 +3,19 @@ import fs from "fs";
 import config from "./config.json" assert { type: "json" };
 
 const commands = [];
-
-fs.readdirSync("./commands/slash/")
-    .filter(file => file.endsWith(".js"))
-    .forEach(async file => {
-        const cmd = await import(`./commands/slash/${file}`);
-        commands.push(cmd.default.data);
-    });
+for (const file of fs.readdirSync("./commands/slash").filter(f => f.endsWith(".js"))) {
+  const cmd = (await import(`./commands/slash/${file}`)).default;
+  commands.push(cmd.data.toJSON());
+}
 
 const rest = new REST({ version: "10" }).setToken(config.token);
+const appId = "YOUR_APPLICATION_ID";
 
-(async () => {
-    try {
-        console.log("Registering slash commands...");
-        await rest.put(
-            Routes.applicationCommands("YOUR_BOT_APPLICATION_ID"),
-            { body: commands }
-        );
-        console.log("Slash commands registered.");
-    } catch (e) {
-        console.error(e);
-    }
-})();
+try {
+  console.log("Registering slash commands...");
+  await rest.put(Routes.applicationCommands(appId), { body: commands });
+  console.log("✅ Slash commands registered.");
+} catch (e) {
+  console.error(e);
+}
+
