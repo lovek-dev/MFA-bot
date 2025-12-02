@@ -1,6 +1,6 @@
-module.exports = {
+export default {
   name: "ready",
   run(client) {
-    console.log(`Logged in as ${client.user.tag}`);
+    console.log(`✅ ${client.user.tag} ready`);
   }
 };
