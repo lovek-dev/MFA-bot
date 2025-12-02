@@ -1,14 +1,18 @@
-const { EmbedBuilder } = require("discord.js");
-const config = require("../config.json");
+import { EmbedBuilder } from "discord.js";
+import config from "../config.json" assert { type: "json" };
 
-module.exports = {
+export default {
   customId: "show_rules",
-  async run(client, interaction) {
-    const embed = new EmbedBuilder()
-      .setTitle("📘 Server Rules")
-      .setDescription(config.rulesText)
-      .setColor("Blue");
 
-    interaction.reply({ embeds: [embed], ephemeral: true });
+  run: async (client, interaction) => {
+    const rulesEmbed = new EmbedBuilder()
+      .setTitle("📘 Clan Rules")
+      .setDescription(config.rulesMessage)
+      .setColor("#0099ff");
+
+    interaction.reply({
+      embeds: [rulesEmbed],
+      ephemeral: true
+    });
   }
 };
