@@ -1,0 +1,14 @@
+{
+  "name": "discord-multi-bot",
+  "version": "1.0.0",
+  "description": "A discord bot with slash + prefix commands",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.0"
+  }
+}
