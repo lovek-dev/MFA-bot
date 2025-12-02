@@ -1,83 +1,33 @@
-import fs from "fs";
-import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
-import config from "./config.json" assert { type: "json" };
-import { logAction } from "./utils/logger.js";
+const { Client, GatewayIntentBits, Partials, Collection } = require("discord.js");
+const fs = require("fs");
+const path = require("path");
+const config = require("./config.json");
 
 const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.DirectMessages
-    ],
-    partials: [Partials.Channel]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers
+  ],
+  partials: [Partials.Channel]
 });
 
 client.commands = new Collection();
-client.prefixCommands = new Collection();
+client.slashCommands = new Collection();
+client.buttons = new Collection();
 
-// Load prefix commands
-fs.readdirSync("./commands/prefix/")
-  .filter(f => f.endsWith(".js"))
-  .forEach(file => {
-      import(`./commands/prefix/${file}`).then(cmd => {
-          client.prefixCommands.set(cmd.default.name, cmd.default);
-      });
-  });
+// Load handlers
+require("./handlers/commandHandler")(client);
+require("./handlers/slashHandler")(client);
 
-// Load slash commands
-client.slash = [];
-fs.readdirSync("./commands/slash/")
-  .filter(f => f.endsWith(".js"))
-  .forEach(file => {
-      import(`./commands/slash/${file}`).then(cmd => {
-          client.slash.push(cmd.default.data);
-          client.commands.set(cmd.default.data.name, cmd.default);
-      });
-  });
-
-client.on("ready", () => {
-    console.log(`Logged in as ${client.user.tag}`);
-});
-
-// Prefix command handler
-client.on("messageCreate", async message => {
-    if (!message.content.startsWith(config.prefix) || message.author.bot) return;
-
-    const args = message.content.slice(config.prefix.length).trim().split(/ +/);
-    const cmdName = args.shift().toLowerCase();
-
-    const cmd = client.prefixCommands.get(cmdName);
-    if (!cmd) return;
-
-    try {
-        await cmd.run(client, message, args);
-    } catch (e) {
-        message.reply("❌ Error executing command.");
-        console.error(e);
-    }
-});
-
-// Slash command handler
-client.on("interactionCreate", async interaction => {
-    if (!interaction.isChatInputCommand()) return;
-
-    const cmd = client.commands.get(interaction.commandName);
-    if (!cmd) return;
-
-    try {
-        await cmd.run(client, interaction);
-    } catch (e) {
-        interaction.reply({ content: "❌ Error executing slash command.", ephemeral: true });
-        console.error(e);
-    }
-});
+// Load events
+const eventFiles = fs.readdirSync("./events");
+for (const file of eventFiles) {
+  const event = require(`./events/${file}`);
+  client.on(event.name, (...args) => event.run(client, ...args));
+}
 
 client.login(config.token);
-import { handleButton } from "./interactions/buttonHandler.js";
 
-client.on("interactionCreate", async (interaction) => {
-    if (interaction.isButton()) handleButton(interaction);
-});
 
