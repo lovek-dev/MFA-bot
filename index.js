@@ -75,3 +75,9 @@ client.on("interactionCreate", async interaction => {
 });
 
 client.login(config.token);
+import { handleButton } from "./interactions/buttonHandler.js";
+
+client.on("interactionCreate", async (interaction) => {
+    if (interaction.isButton()) handleButton(interaction);
+});
+
