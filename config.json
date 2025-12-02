@@ -1,7 +1,8 @@
 {
-  "token": "YOUR_BOT_TOKEN",
-  "prefix": "!",
+  "token": "MTQ0NTQwNjY1Njc5MDkyNTM1Mg.GUd47Q.8h5bVievoKT8Ypu4WJ8_M3-jSsQfaPlnZKa72Q",
+  "prefix": "+",
   "logChannelId": "LOG_CHANNEL_ID",
   "allowedRoleId": "ROLE_ID_THAT_CAN_USE_BOT"
+  "ownerId": "1040925985618530376"
 }
 
