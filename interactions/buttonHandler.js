@@ -4,7 +4,10 @@ import {
   ButtonBuilder,
   ButtonStyle
 } from "discord.js";
-import config from "../config.json" assert { type: "json" };
+
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const config = require("../config.json");
 
 export async function handleButton(interaction) {
   const id = interaction.customId;
@@ -34,13 +37,18 @@ export async function handleButton(interaction) {
     let row = new ActionRowBuilder();
     config.claimRoles.forEach((r, i) => {
       row.addComponents(
-        new ButtonBuilder().setCustomId(`claim_${r.id}`).setLabel(r.label).setStyle(ButtonStyle.Secondary)
+        new ButtonBuilder()
+          .setCustomId(`claim_${r.id}`)
+          .setLabel(r.label)
+          .setStyle(ButtonStyle.Secondary)
       );
+
       if ((i + 1) % 3 === 0) {
         rows.push(row);
         row = new ActionRowBuilder();
       }
     });
+
     if (row.components.length > 0) rows.push(row);
 
     return interaction.reply({ embeds: [embed], components: rows, ephemeral: true });
@@ -52,5 +60,11 @@ export async function handleButton(interaction) {
     if (!role) return interaction.reply({ content: "❌ Role not found.", ephemeral: true });
 
     if (interaction.member.roles.cache.has(roleId)) {
-      await interaction.member.roles.remove(roleId);
-      return interaction.reply
+      await interaction.member.roles.remove(roleId).catch(() => {});
+      return interaction.reply({ content: `❌ Removed role **${role.name}**.`, ephemeral: true });
+    } else {
+      await interaction.member.roles.add(roleId).catch(() => {});
+      return interaction.reply({ content: `✅ Added role **${role.name}**.`, ephemeral: true });
+    }
+  }
+}
