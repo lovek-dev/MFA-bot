@@ -28,7 +28,16 @@ A feature-rich Discord moderation bot with prefix commands, slash commands, and 
 │       ├── dmrole.js        # DM all members of a role
 │       ├── send.js          # Send text or embed
 │       ├── setrole.js       # Set allowed role for bot commands
-│       └── setup.js         # Create welcome panel with rules
+│       ├── setup.js         # Create welcome panel with rules
+│       ├── respond.js       # Set auto-responses for trigger words
+│       ├── listresponses.js # List all auto-responses
+│       ├── removeresponse.js# Remove an auto-response
+│       ├── schedule.js      # Schedule embed messages
+│       ├── listschedules.js # List scheduled messages
+│       └── cancelschedule.js# Cancel a scheduled message
+├── data/                    # Data storage
+│   ├── responses.json       # Auto-response storage
+│   └── schedules.json       # Scheduled messages storage
 ├── buttons/                 # Button interaction handlers
 │   ├── acceptRules.js       # Accept rules button handler
 │   ├── claimRole.js         # Claim roles button handler
@@ -83,6 +92,19 @@ The `config.json` file contains non-sensitive configuration:
 - `/setrole role:` - Set allowed role
 - `/setup` - Create welcome panel with rules and buttons
 
+### Auto-Responder Commands
+- `/respond trigger: reply:` - Set an auto-response (when someone says the trigger word, bot replies)
+- `/listresponses` - View all configured auto-responses
+- `/removeresponse trigger:` - Remove an auto-response
+
+### Scheduled Messages Commands
+- `/schedule channel: date: time: title: description: [color:]` - Schedule an embed message
+  - Date format: YYYY-MM-DD (e.g., 2024-12-25)
+  - Time format: HH:MM in 24-hour format (e.g., 14:30)
+  - Color: hex code (#FF5733) or name (red, blue, green, etc.)
+- `/listschedules` - View all scheduled messages
+- `/cancelschedule id:` - Cancel a scheduled message
+
 ## Deploying Slash Commands
 To register slash commands with Discord:
 ```bash
@@ -96,6 +118,10 @@ node index.js
 ```
 
 ## Recent Changes
+- Added auto-responder system with /respond, /listresponses, /removeresponse commands
+- Added scheduled embed messages with /schedule, /listschedules, /cancelschedule commands
+- Added data storage for responses and schedules in data/ folder
+- Scheduler runs every 30 seconds to check and send due messages
 - Converted all CommonJS files to ES Modules for consistency
 - Fixed duplicate command names (moderation.js renamed to `mod`)
 - Updated token handling to use environment variables
